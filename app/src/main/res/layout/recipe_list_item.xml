@@ -25,6 +25,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
+                android:tint="@color/colorPrimary"
                 android:src="@drawable/ic_restaurant_black_24dp"/>
 
             <TextView
