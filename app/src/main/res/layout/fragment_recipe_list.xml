@@ -16,12 +16,12 @@
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="320dp"
             app:title="@string/app_name"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="bottom|center_horizontal"
             app:expandedTitleTextAppearance="@style/BlueText"
-            app:expandedTitleMarginBottom="20dp"
+            app:expandedTitleMarginBottom="30dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 

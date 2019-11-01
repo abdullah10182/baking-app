@@ -14,11 +14,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().hide();
+        initRecipeListFragment();
+    }
 
+    public void initRecipeListFragment() {
         RecipeListFragment recipeListFragment = new RecipeListFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.ff_recipe_list_container, recipeListFragment)
+                .replace(R.id.fl_recipe_list_container, recipeListFragment)
                 .commit();
     }
 

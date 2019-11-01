@@ -3,14 +3,10 @@ package com.example.bakingapp.fragments;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -50,22 +46,22 @@ public class RecipeListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-
         Context context = rootView.getContext();
 
+        initRecipeRecycleView(rootView, context);
+        getRecipes();
+        initAppBar(rootView);
+
+        return rootView;
+    }
+
+
+    public void initRecipeRecycleView(View rootView, Context context) {
         mRecyclerView = rootView.findViewById(R.id.rv_recipes_list);
         mLayoutManager = new GridLayoutManager(context,2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecipeListAdapter = new RecipeListAdapter(mRecipes);
+        mRecipeListAdapter = new RecipeListAdapter(context, mRecipes);
         mRecyclerView.setAdapter(mRecipeListAdapter);
-
-        getRecipes();
-
-        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.app_bar_layout);
-        mHeroImage = rootView.findViewById(R.id.iv_cupcake_image);
-        appBarListener(appBarLayout);
-
-        return rootView;
     }
 
     public void getRecipes() {
@@ -90,7 +86,6 @@ public class RecipeListFragment extends Fragment {
                 recipes.addAll(recipes);
                 recipes.addAll(recipes);
                 recipes.addAll(recipes);
-                System.out.println("------------ "+recipes);
                 mRecipeListAdapter.setRecipes(recipes);
 
                 mRecipeListAdapter.notifyDataSetChanged();
@@ -102,6 +97,12 @@ public class RecipeListFragment extends Fragment {
                 System.out.println(t.getMessage());
             }
         });
+    }
+
+    public void initAppBar(View rootView) {
+        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.app_bar_layout);
+        mHeroImage = rootView.findViewById(R.id.iv_cupcake_image);
+        appBarListener(appBarLayout);
     }
 
     public void appBarListener(AppBarLayout appBarLayout) {

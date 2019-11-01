@@ -2,7 +2,7 @@ package com.example.bakingapp.models;
 
 public class Ingredient {
     private Double quantity;
-    private  String measure;
+    private String measure;
     private String ingredient;
 
     public Double getQuantity() {

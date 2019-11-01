@@ -1,12 +1,17 @@
 package com.example.bakingapp.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.bakingapp.R;
+import com.example.bakingapp.activities.RecipeDetailActivity;
 import com.example.bakingapp.models.Recipe;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +24,12 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
 
     private static final String TAG = "RecipeListAdapter";
 
-    private ArrayList<String> mTitles;
     private List<Recipe> mRecipes;
+    private Context mContext;
 
-    public RecipeListAdapter(List<Recipe> mRecipes) {
+    public RecipeListAdapter(Context context, List<Recipe> mRecipes) {
         this.mRecipes = mRecipes;
+        mContext = context;
     }
 
     public void setRecipes(List<Recipe> recipes) {
@@ -45,7 +51,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         holder.recipeListCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(mRecipes.get(position).getName());
+                //System.out.println(mRecipes.get(position).getName());
+                launchRecipeDetailActivity(mRecipes.get(position));
             }
         });
 
@@ -54,6 +61,18 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     @Override
     public int getItemCount() {
         return mRecipes.size();
+    }
+
+    public void launchRecipeDetailActivity(Recipe selectedRecipe) {
+        System.out.println(selectedRecipe);
+        Intent intent = new Intent(mContext, RecipeDetailActivity.class);
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        String jsonSelectedRecipe = gson.toJson(selectedRecipe);
+        intent.putExtra("recipe", jsonSelectedRecipe);
+        mContext.startActivity(intent);
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
@@ -67,6 +86,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
             recipeListCard = itemView.findViewById(R.id.cv_recipe_item);
         }
     }
+
 
 
 

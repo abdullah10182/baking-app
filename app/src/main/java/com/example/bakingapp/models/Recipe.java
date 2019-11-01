@@ -10,6 +10,7 @@ public class Recipe {
     private int recipeId;
     private  String name;
     private List<Ingredient> ingredients;
+    private List<Step> steps;
 
 
     public int getRecipeId() {
@@ -22,5 +23,9 @@ public class Recipe {
 
     public List<Ingredient> getIngredients() {
         return ingredients;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
     }
 }
