@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.bakingapp.R;
 import com.example.bakingapp.fragments.IngredientsStepsFragment;
@@ -31,11 +32,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         initIngredientsStepsFragment();
         setRecipeFromIntent();
+        initActionBar();
 
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(mRecipe.getName());
     }
 
     @Override
@@ -62,6 +60,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
         mRecipe = gson.fromJson(jsonSelectedRecipe, Recipe.class);
         mSteps = mRecipe.getSteps();
         mIngredients = mRecipe.getIngredients();
+    }
+
+    public void initActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(mRecipe.getName());
     }
 
     public Recipe getRecipe() {

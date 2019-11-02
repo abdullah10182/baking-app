@@ -24,13 +24,36 @@
                 android:layout_marginBottom="10dp"
                 android:paddingLeft="20dp"
                 android:textColor="@color/colorPrimary"
-                android:id="@+id/tv_detail_title"/>
+                android:id="@+id/tv_ingredients_title"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="20dp"
                 android:id="@+id/rv_ingredients_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="35dp"
+                android:fontFamily="cursive"
+                android:text="@string/steps"
+                android:background="@color/colorAccentLight"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="20dp"
+                android:textColor="@color/colorPrimary"
+                android:id="@+id/tv_steps_title"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:nestedScrollingEnabled="false"
+                android:id="@+id/rv_steps_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

@@ -25,4 +25,22 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    public boolean isTablet() {
+        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+        if (tabletSize) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isLandscape() {
+        boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
+        if (isLandscape) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

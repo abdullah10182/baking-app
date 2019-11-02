@@ -11,6 +11,7 @@ import com.example.bakingapp.R;
 import com.example.bakingapp.activities.RecipeDetailActivity;
 import com.example.bakingapp.adapters.IngredientsListAdapter;
 import com.example.bakingapp.adapters.RecipeListAdapter;
+import com.example.bakingapp.adapters.StepsListAdapter;
 import com.example.bakingapp.models.Ingredient;
 import com.example.bakingapp.models.Recipe;
 import com.example.bakingapp.models.Step;
@@ -27,12 +28,17 @@ import androidx.recyclerview.widget.RecyclerView;
 public class IngredientsStepsFragment extends Fragment {
 
     private Recipe mRecipe;
+
     private List<Ingredient> mIngredients;
     private List<Step> mSteps;
+
     private RecyclerView mRecyclerViewIgredients;
     private RecyclerView.LayoutManager mLayoutManagerIngredients;
     private IngredientsListAdapter mIngredientsListAdapter;
-    private TextView mDetailTitle;
+
+    private RecyclerView mRecyclerViewSteps;
+    private RecyclerView.LayoutManager mLayoutManagerSteps;
+    private StepsListAdapter mStepsListAdapter;
 
     public IngredientsStepsFragment() {
     }
@@ -42,12 +48,10 @@ public class IngredientsStepsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ingredients_steps_container, container, false);
         Context context = rootView.getContext();
-        mDetailTitle = rootView.findViewById(R.id.tv_detail_title);
 
         setDataFromContainerActivity();
         initIngredientsRecycleView(rootView, context);
-        mIngredientsListAdapter.setIngredients(mIngredients);
-        mIngredientsListAdapter.notifyDataSetChanged();
+        initStetpsRecycleView(rootView, context);
 
         return rootView;
     }
@@ -65,5 +69,19 @@ public class IngredientsStepsFragment extends Fragment {
         mRecyclerViewIgredients.setLayoutManager(mLayoutManagerIngredients);
         mIngredientsListAdapter = new IngredientsListAdapter(context, mIngredients);
         mRecyclerViewIgredients.setAdapter(mIngredientsListAdapter);
+
+        mIngredientsListAdapter.setIngredients(mIngredients);
+        mIngredientsListAdapter.notifyDataSetChanged();
+    }
+
+    public void initStetpsRecycleView(View rootView, Context context) {
+        mRecyclerViewSteps = rootView.findViewById(R.id.rv_steps_list);
+        mLayoutManagerSteps = new LinearLayoutManager(context);
+        mRecyclerViewSteps.setLayoutManager(mLayoutManagerSteps);
+        mStepsListAdapter = new StepsListAdapter(context, mSteps);
+        mRecyclerViewSteps.setAdapter(mStepsListAdapter);
+
+        mStepsListAdapter.setIngredients(mSteps);
+        mStepsListAdapter.notifyDataSetChanged();
     }
 }

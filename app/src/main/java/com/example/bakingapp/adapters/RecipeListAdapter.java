@@ -64,7 +64,6 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     }
 
     public void launchRecipeDetailActivity(Recipe selectedRecipe) {
-        System.out.println(selectedRecipe);
         Intent intent = new Intent(mContext, RecipeDetailActivity.class);
 
         GsonBuilder builder = new GsonBuilder();

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bakingapp.MainActivity;
 import com.example.bakingapp.R;
+import com.example.bakingapp.activities.RecipeDetailActivity;
 import com.example.bakingapp.adapters.RecipeListAdapter;
 import com.example.bakingapp.models.Recipe;
 import com.example.bakingapp.rest.JsonPlaceHolderApi;
@@ -57,8 +60,17 @@ public class RecipeListFragment extends Fragment {
 
 
     public void initRecipeRecycleView(View rootView, Context context) {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        boolean isTablet = mainActivity.isTablet();
+        boolean isLandscpae = mainActivity.isLandscape();
+        int spanCount = 2;
+        if(isTablet && isLandscpae) {
+            spanCount = 4;
+        } else if(isTablet) {
+            spanCount = 3;
+        }
         mRecyclerView = rootView.findViewById(R.id.rv_recipes_list);
-        mLayoutManager = new GridLayoutManager(context,2);
+        mLayoutManager = new GridLayoutManager(context,spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecipeListAdapter = new RecipeListAdapter(context, mRecipes);
         mRecyclerView.setAdapter(mRecipeListAdapter);
