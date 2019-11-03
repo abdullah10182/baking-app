@@ -49,14 +49,14 @@ public class IngredientsStepsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_ingredients_steps_container, container, false);
         Context context = rootView.getContext();
 
-        setDataFromContainerActivity();
+        getDataFromContainerActivity();
         initIngredientsRecycleView(rootView, context);
         initStetpsRecycleView(rootView, context);
 
         return rootView;
     }
 
-    public void setDataFromContainerActivity() {
+    public void getDataFromContainerActivity() {
         RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) getActivity();
         mRecipe = recipeDetailActivity.getRecipe();
         mIngredients = recipeDetailActivity.getIngredients();

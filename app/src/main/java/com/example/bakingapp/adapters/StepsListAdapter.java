@@ -12,6 +12,8 @@ import com.example.bakingapp.R;
 import com.example.bakingapp.activities.StepDetailActivity;
 import com.example.bakingapp.models.Ingredient;
 import com.example.bakingapp.models.Step;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
@@ -52,13 +54,20 @@ public class StepsListAdapter extends RecyclerView.Adapter<StepsListAdapter.View
         holder.stepListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchStepDetailActivity(mSteps.get(position));
+                launchStepDetailActivity(mSteps ,mSteps.get(position));
             }
         });
     }
 
-    public void launchStepDetailActivity(Step selectedStep) {
+    public void launchStepDetailActivity(List<Step> steps, Step selectedStep) {
         Intent intent = new Intent(mContext, StepDetailActivity.class);
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        String stepsJson = gson.toJson(steps);
+
+        intent.putExtra("steps", stepsJson);
         intent.putExtra("step", selectedStep);
         mContext.startActivity(intent);
     }

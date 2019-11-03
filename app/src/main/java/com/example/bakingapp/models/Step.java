@@ -1,12 +1,17 @@
 package com.example.bakingapp.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Step implements Serializable {
+    @SerializedName("id")
     private int stedId;
     private String description;
     private String shortDescription;
+    @SerializedName("videoURL")
     private String videoUrl;
+    @SerializedName("thumbnailURL")
     private String thumbnailUrl;
 
     public Step(int stedId, String description, String shortDescription, String videoUrl, String thumbnailUrl) {
@@ -17,7 +22,7 @@ public class Step implements Serializable {
         this.thumbnailUrl = thumbnailUrl;
     }
 
-    public int getStedId() {
+    public int getStepId() {
         return stedId;
     }
 
