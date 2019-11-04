@@ -49,6 +49,10 @@ public class StepDetailActivity extends AppCompatActivity {
         actionBar.setTitle(mStep.getShortDescription());
     }
 
+    public void hideActionBar() {
+        getSupportActionBar().hide();
+    }
+
     public void getDataFromIntent() {
         Intent intent = getIntent();
         mStep = (Step) intent.getSerializableExtra("step");

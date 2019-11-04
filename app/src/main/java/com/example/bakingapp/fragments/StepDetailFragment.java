@@ -1,20 +1,26 @@
 package com.example.bakingapp.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.bakingapp.MainActivity;
 import com.example.bakingapp.R;
 import com.example.bakingapp.activities.StepDetailActivity;
 import com.example.bakingapp.models.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -32,40 +38,48 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class StepDetailFragment extends Fragment implements SimpleExoPlayer.VideoListener {
+import static com.google.android.exoplayer2.Player.*;
+
+public class StepDetailFragment extends Fragment implements Player.EventListener, SimpleExoPlayer.VideoListener {
 
     private Step mCurrentStep;
     private ArrayList<Step> mCurrentSteps;
     private Context mContext;
     private SimpleExoPlayer mExoplayer;
-    private SimpleExoPlayerView mExoplayerView;
+
+    @BindView(R.id.exop_step_video_view)
+    public SimpleExoPlayerView mExoplayerView;
     private TextView mDescription;
     private Button mPrevBtn;
     private Button mNextBtn;
     private TextView mNoVideo;
+    public boolean mIsLandscape;
+    @BindView(R.id.tv_loading_video)
+    public ProgressBar mLoadingVideo;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step_detail_container, container, false);
+        ButterKnife.bind(this, rootView);
+
+        int currentOrientation = getResources().getConfiguration().orientation;
+        mIsLandscape = (currentOrientation == Configuration.ORIENTATION_LANDSCAPE);
 
         getDataFromContainerActivity();
-        mExoplayerView = rootView.findViewById(R.id.exop_step_video_view);
         ///
         mNoVideo = rootView.findViewById(R.id.tv_no_video);
         mDescription = rootView.findViewById(R.id.tv_step_description);
         mDescription.setText(mCurrentStep.getDescription());
         //mDescription.getLayoutParams().width = 100;
         ///
-        initializeVideoPlayer(mCurrentStep.getVideoUrl());
         initStepControlButtons(rootView);
-        return rootView;
-    }
+        initializeVideoPlayer(mCurrentStep.getVideoUrl());
 
-    @Override
-    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
-        mDescription.getLayoutParams().width = width;
+        return rootView;
     }
 
     @Override
@@ -78,19 +92,28 @@ public class StepDetailFragment extends Fragment implements SimpleExoPlayer.Vide
         StepDetailActivity stepDetailActivity = (StepDetailActivity) getActivity();
         mCurrentStep = stepDetailActivity.getStep();
         mCurrentSteps = stepDetailActivity.getSteps();
+        if(mIsLandscape) {
+            //hide appbar
+            stepDetailActivity.hideActionBar();
+        }
     }
 
     public void initializeVideoPlayer(String videoUrl) {
+        mExoplayerView.setVisibility(View.GONE);
         if(videoUrl == null || videoUrl.isEmpty()) {
-            mExoplayerView.setVisibility(View.INVISIBLE);
             mNoVideo.setVisibility(View.VISIBLE);
             return;
         } else {
-            mExoplayerView.setVisibility(View.VISIBLE);
+            //mExoplayerView.setVisibility(View.VISIBLE);
             mNoVideo.setVisibility(View.INVISIBLE);
         }
 
+        int stepsSize = mCurrentSteps.size() - 1;
+        int nextId = mCurrentStep.getStepId();
+        setButtonsState(stepsSize, nextId);
+
         if(mExoplayer == null) {
+            mLoadingVideo.setVisibility(View.VISIBLE);
             Uri videoUri = Uri.parse(videoUrl);
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
@@ -102,6 +125,8 @@ public class StepDetailFragment extends Fragment implements SimpleExoPlayer.Vide
             mExoplayer.prepare(mediaSource);
             mExoplayer.setPlayWhenReady(true);
             //mExoplayer.addVideoListener(this);
+            mExoplayer.addListener(this);
+
         }
     }
 
@@ -136,22 +161,7 @@ public class StepDetailFragment extends Fragment implements SimpleExoPlayer.Vide
             nextId = currentId - 1;
         }
 
-        System.out.println(nextId);
-        System.out.println(stepsSize);
-
-
-        if(nextId == 0) {
-            mPrevBtn.setEnabled(false);
-        } else {
-            mPrevBtn.setEnabled(true);
-        }
-
-        if(stepsSize == nextId) {
-            mNextBtn.setEnabled(false);
-        } else {
-            mNextBtn.setEnabled(true);
-        }
-
+        setButtonsState(stepsSize, nextId);
 
         mCurrentStep = mCurrentSteps.get(nextId);
         StepDetailActivity stepDetailActivity = (StepDetailActivity) getActivity();
@@ -170,9 +180,49 @@ public class StepDetailFragment extends Fragment implements SimpleExoPlayer.Vide
         }
     }
 
+    private void setButtonsState(int stepsSize, int nextId) {
+        if(nextId == 0) {
+            mPrevBtn.setEnabled(false);
+        } else {
+            mPrevBtn.setEnabled(true);
+        }
+
+        if(stepsSize == nextId) {
+            mNextBtn.setEnabled(false);
+        } else {
+            mNextBtn.setEnabled(true);
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         releasePlayer();
     }
+
+
+//    @Override
+//    public void onPlayerStateChanged(boolean playWhenReady, int state) {
+//        System.out.println("0000f0ff0f00f0f00");
+//        System.out.println(playWhenReady);
+//        if (state == mExoplayer.STATE_ENDED){
+//            //player back e
+//            System.out.println(playWhenReady);
+//        }
+//    }
+
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        System.out.println("play when ready-----" + playbackState);
+        if (playbackState == STATE_READY) {
+            //do something
+            mLoadingVideo.setVisibility(View.INVISIBLE);
+            mExoplayerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
+
 }
