@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.bakingapp.R;
+import com.example.bakingapp.activities.RecipeDetailActivity;
 import com.example.bakingapp.activities.StepDetailActivity;
-import com.example.bakingapp.models.Ingredient;
 import com.example.bakingapp.models.Step;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,19 +18,20 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class StepsListAdapter extends RecyclerView.Adapter<StepsListAdapter.Viewholder>{
 
     private static final String TAG = "StepsListAdapter";
+    boolean mIsMasterDetailLayout;
 
     private List<Step> mSteps;
     private Context mContext;
 
-    public StepsListAdapter(Context context, List<Step> steps) {
+    public StepsListAdapter(Context context, List<Step> steps, boolean isMasterDetailLayout) {
         mSteps = steps;
         mContext = context;
+        mIsMasterDetailLayout = isMasterDetailLayout;
     }
 
     public void setIngredients(List<Step> steps) {
@@ -54,22 +55,28 @@ public class StepsListAdapter extends RecyclerView.Adapter<StepsListAdapter.View
         holder.stepListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchStepDetailActivity(mSteps ,mSteps.get(position));
+                launchStepDetailActivity(mSteps ,mSteps.get(position), holder, position);
             }
         });
     }
 
-    public void launchStepDetailActivity(List<Step> steps, Step selectedStep) {
-        Intent intent = new Intent(mContext, StepDetailActivity.class);
+    public void launchStepDetailActivity(List<Step> steps, Step selectedStep, RecyclerView.ViewHolder holder, int position) {
 
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         Gson gson = builder.create();
         String stepsJson = gson.toJson(steps);
 
-        intent.putExtra("steps", stepsJson);
-        intent.putExtra("step", selectedStep);
-        mContext.startActivity(intent);
+        if(mIsMasterDetailLayout) {
+            ((RecipeDetailActivity) mContext).onClickCalled(position);
+        } else {
+            Intent intent = new Intent(mContext, StepDetailActivity.class);
+            intent.putExtra("steps", stepsJson);
+            intent.putExtra("step", selectedStep);
+            mContext.startActivity(intent);
+        }
+
+
     }
 
     @Override

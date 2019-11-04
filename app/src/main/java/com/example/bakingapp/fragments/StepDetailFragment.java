@@ -1,5 +1,6 @@
 package com.example.bakingapp.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.bakingapp.MainActivity;
 import com.example.bakingapp.R;
+import com.example.bakingapp.activities.RecipeDetailActivity;
 import com.example.bakingapp.activities.StepDetailActivity;
 import com.example.bakingapp.models.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -59,6 +61,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     public boolean mIsLandscape;
     @BindView(R.id.tv_loading_video)
     public ProgressBar mLoadingVideo;
+    public boolean mIsMasterDetailLayout;
 
     @Nullable
     @Override
@@ -69,7 +72,26 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         int currentOrientation = getResources().getConfiguration().orientation;
         mIsLandscape = (currentOrientation == Configuration.ORIENTATION_LANDSCAPE);
 
-        getDataFromContainerActivity();
+        mIsMasterDetailLayout = setMasterDetailLayout();
+
+        if(mIsMasterDetailLayout) {
+            int position ;
+            Bundle bundle = this.getArguments();
+            System.out.println("savedInstanceState " + savedInstanceState);
+            System.out.println("bundle " + bundle);
+            if(savedInstanceState!=null) {
+                position =savedInstanceState.getInt("position");
+            } else if (bundle != null) {
+                position = bundle.getInt("position", 0);
+            } else {
+                position = 0;
+            }
+
+            getDataFromRecipeDetailActivity(position);
+        } else {
+            getDataFromStepDetailActivity();
+        }
+
         ///
         mNoVideo = rootView.findViewById(R.id.tv_no_video);
         mDescription = rootView.findViewById(R.id.tv_step_description);
@@ -88,7 +110,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         mContext = context;
     }
 
-    public void getDataFromContainerActivity() {
+    public void getDataFromStepDetailActivity() {
         StepDetailActivity stepDetailActivity = (StepDetailActivity) getActivity();
         mCurrentStep = stepDetailActivity.getStep();
         mCurrentSteps = stepDetailActivity.getSteps();
@@ -96,6 +118,12 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             //hide appbar
             stepDetailActivity.hideActionBar();
         }
+    }
+
+    public void getDataFromRecipeDetailActivity(int position) {
+        RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) getActivity();
+        mCurrentSteps = recipeDetailActivity.getSteps();
+        mCurrentStep = mCurrentSteps.get(position);
     }
 
     public void initializeVideoPlayer(String videoUrl) {
@@ -164,8 +192,13 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         setButtonsState(stepsSize, nextId);
 
         mCurrentStep = mCurrentSteps.get(nextId);
-        StepDetailActivity stepDetailActivity = (StepDetailActivity) getActivity();
-        stepDetailActivity.setTitleBarText(mCurrentStep.getShortDescription());
+        if(mIsMasterDetailLayout) {
+            RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) getActivity();
+            recipeDetailActivity.setTitleBarText(mCurrentStep.getShortDescription());
+        } else {
+            StepDetailActivity stepDetailActivity = (StepDetailActivity) getActivity();
+            stepDetailActivity.setTitleBarText(mCurrentStep.getShortDescription());
+        }
 
         mDescription.setText(mCurrentStep.getDescription());
         releasePlayer();
@@ -200,21 +233,8 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         releasePlayer();
     }
 
-
-//    @Override
-//    public void onPlayerStateChanged(boolean playWhenReady, int state) {
-//        System.out.println("0000f0ff0f00f0f00");
-//        System.out.println(playWhenReady);
-//        if (state == mExoplayer.STATE_ENDED){
-//            //player back e
-//            System.out.println(playWhenReady);
-//        }
-//    }
-
-
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        System.out.println("play when ready-----" + playbackState);
         if (playbackState == STATE_READY) {
             //do something
             mLoadingVideo.setVisibility(View.INVISIBLE);
@@ -222,7 +242,21 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         }
     }
 
+    public boolean setMasterDetailLayout() {
+        boolean isMasterDetailLayout = false;
+        if( getActivity().getClass().getSimpleName().equals("RecipeDetailActivity")) {
+            RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) getActivity();
+            if(recipeDetailActivity.getFragmentDivider() != null) {
+                isMasterDetailLayout = true;
+            }
+        }
 
+        return isMasterDetailLayout;
+    }
 
-
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("position", mCurrentStep.getStepId());
+    }
 }

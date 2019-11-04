@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -22,8 +23,9 @@ import java.util.List;
 
 public class StepDetailActivity extends AppCompatActivity {
 
-    private Step mStep;
+    public Step mStep;
     private ArrayList<Step> mSteps;
+    public Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,6 @@ public class StepDetailActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(title);
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {

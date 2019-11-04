@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.bakingapp.R;
 import com.example.bakingapp.activities.RecipeDetailActivity;
 import com.example.bakingapp.adapters.IngredientsListAdapter;
-import com.example.bakingapp.adapters.RecipeListAdapter;
 import com.example.bakingapp.adapters.StepsListAdapter;
 import com.example.bakingapp.models.Ingredient;
 import com.example.bakingapp.models.Recipe;
@@ -21,9 +19,10 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class IngredientsStepsFragment extends Fragment {
 
@@ -40,18 +39,26 @@ public class IngredientsStepsFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManagerSteps;
     private StepsListAdapter mStepsListAdapter;
 
-    public IngredientsStepsFragment() {
-    }
+    @Nullable
+    @BindView(R.id.v_divider_tablet_land)
+    public View mFragmentDivider;
+
+
+    public IngredientsStepsFragment() {}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ingredients_steps_container, container, false);
         Context context = rootView.getContext();
+        ButterKnife.bind(this, rootView);
 
         getDataFromContainerActivity();
         initIngredientsRecycleView(rootView, context);
-        initStetpsRecycleView(rootView, context);
+        initStepsRecycleView(rootView, context);
+
+        if(mFragmentDivider != null)
+        mFragmentDivider.setVisibility(View.GONE);
 
         return rootView;
     }
@@ -74,14 +81,26 @@ public class IngredientsStepsFragment extends Fragment {
         mIngredientsListAdapter.notifyDataSetChanged();
     }
 
-    public void initStetpsRecycleView(View rootView, Context context) {
+    public void initStepsRecycleView(View rootView, Context context) {
         mRecyclerViewSteps = rootView.findViewById(R.id.rv_steps_list);
         mLayoutManagerSteps = new LinearLayoutManager(context);
         mRecyclerViewSteps.setLayoutManager(mLayoutManagerSteps);
-        mStepsListAdapter = new StepsListAdapter(context, mSteps);
+        RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) getActivity();
+        recipeDetailActivity.getFragmentDivider();
+        boolean masterDetailLayout  = recipeDetailActivity.getFragmentDivider() != null ? true : false;
+        mStepsListAdapter = new StepsListAdapter(context, mSteps, masterDetailLayout);
         mRecyclerViewSteps.setAdapter(mStepsListAdapter);
 
         mStepsListAdapter.setIngredients(mSteps);
         mStepsListAdapter.notifyDataSetChanged();
+    }
+
+    public boolean getMasterDetailLayout() {
+
+        if(mFragmentDivider != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
