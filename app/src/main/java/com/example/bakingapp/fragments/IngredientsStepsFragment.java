@@ -31,11 +31,12 @@ public class IngredientsStepsFragment extends Fragment {
     private List<Ingredient> mIngredients;
     private List<Step> mSteps;
 
-    private RecyclerView mRecyclerViewIgredients;
+    @BindView(R.id.rv_ingredients_list)
+    public RecyclerView mRecyclerViewIgredients;
     private RecyclerView.LayoutManager mLayoutManagerIngredients;
     private IngredientsListAdapter mIngredientsListAdapter;
-
-    private RecyclerView mRecyclerViewSteps;
+    @BindView(R.id.rv_steps_list)
+    public RecyclerView mRecyclerViewSteps;
     private RecyclerView.LayoutManager mLayoutManagerSteps;
     private StepsListAdapter mStepsListAdapter;
 
@@ -71,7 +72,6 @@ public class IngredientsStepsFragment extends Fragment {
     }
 
     public void  initIngredientsRecycleView(View rootView, Context context) {
-        mRecyclerViewIgredients = rootView.findViewById(R.id.rv_ingredients_list);
         mLayoutManagerIngredients = new LinearLayoutManager(context);
         mRecyclerViewIgredients.setLayoutManager(mLayoutManagerIngredients);
         mIngredientsListAdapter = new IngredientsListAdapter(context, mIngredients);
@@ -82,7 +82,6 @@ public class IngredientsStepsFragment extends Fragment {
     }
 
     public void initStepsRecycleView(View rootView, Context context) {
-        mRecyclerViewSteps = rootView.findViewById(R.id.rv_steps_list);
         mLayoutManagerSteps = new LinearLayoutManager(context);
         mRecyclerViewSteps.setLayoutManager(mLayoutManagerSteps);
         RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) getActivity();

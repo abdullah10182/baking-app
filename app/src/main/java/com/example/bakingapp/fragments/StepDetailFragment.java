@@ -54,10 +54,14 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
     @BindView(R.id.exop_step_video_view)
     public SimpleExoPlayerView mExoplayerView;
-    private TextView mDescription;
-    private Button mPrevBtn;
-    private Button mNextBtn;
-    private TextView mNoVideo;
+    @BindView(R.id.tv_step_description)
+    public TextView mDescription;
+    @BindView(R.id.btn_previous_video)
+    public Button mPrevBtn;
+    @BindView(R.id.btn_next_video)
+    public Button mNextBtn;
+    @BindView(R.id.tv_no_video)
+    public TextView mNoVideo;
     public boolean mIsLandscape;
     @BindView(R.id.tv_loading_video)
     public ProgressBar mLoadingVideo;
@@ -92,12 +96,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             getDataFromStepDetailActivity();
         }
 
-        ///
-        mNoVideo = rootView.findViewById(R.id.tv_no_video);
-        mDescription = rootView.findViewById(R.id.tv_step_description);
         mDescription.setText(mCurrentStep.getDescription());
-        //mDescription.getLayoutParams().width = 100;
-        ///
         initStepControlButtons(rootView);
         initializeVideoPlayer(mCurrentStep.getVideoUrl());
 
@@ -159,7 +158,6 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     }
 
     private void initStepControlButtons(View rootView) {
-        mPrevBtn = rootView.findViewById(R.id.btn_previous_video);
         mPrevBtn.setEnabled(false);
         mPrevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +166,6 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             }
         });
 
-        mNextBtn = rootView.findViewById(R.id.btn_next_video);
         mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

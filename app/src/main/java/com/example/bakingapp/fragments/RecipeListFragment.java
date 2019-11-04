@@ -27,6 +27,8 @@ import com.google.android.material.appbar.AppBarLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,7 +38,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecipeListFragment extends Fragment {
 
     private String mBaseUrl = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_recipes_list)
+    public RecyclerView mRecyclerView;
     private RecipeListAdapter mRecipeListAdapter;
     private GridLayoutManager mLayoutManager;
     private ArrayList<Recipe> mRecipes = new ArrayList<>();
@@ -50,6 +53,7 @@ public class RecipeListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
         Context context = rootView.getContext();
+        ButterKnife.bind(this, rootView);
 
         initRecipeRecycleView(rootView, context);
         getRecipes();
@@ -57,7 +61,6 @@ public class RecipeListFragment extends Fragment {
 
         return rootView;
     }
-
 
     public void initRecipeRecycleView(View rootView, Context context) {
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -69,7 +72,6 @@ public class RecipeListFragment extends Fragment {
         } else if(isTablet) {
             spanCount = 3;
         }
-        mRecyclerView = rootView.findViewById(R.id.rv_recipes_list);
         mLayoutManager = new GridLayoutManager(context,spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecipeListAdapter = new RecipeListAdapter(context, mRecipes);
