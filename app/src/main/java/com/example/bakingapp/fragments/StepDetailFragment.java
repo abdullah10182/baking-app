@@ -66,6 +66,8 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     @BindView(R.id.tv_loading_video)
     public ProgressBar mLoadingVideo;
     public boolean mIsMasterDetailLayout;
+    @Nullable @BindView(R.id.sv_step_detail_container)
+    public ScrollView mStepDetailContainer;
 
     @Nullable
     @Override
@@ -125,7 +127,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             return;
         } else {
             //mExoplayerView.setVisibility(View.VISIBLE);
-            mNoVideo.setVisibility(View.INVISIBLE);
+            mNoVideo.setVisibility(View.GONE);
         }
 
         int stepsSize = mCurrentSteps.size() - 1;
@@ -177,6 +179,11 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             nextId = currentId + 1;
         } else {
             nextId = currentId - 1;
+        }
+
+        //scroll to top if landscape
+        if(mStepDetailContainer != null) {
+            mStepDetailContainer.fullScroll(ScrollView.FOCUS_UP);
         }
 
         setButtonsState(stepsSize, nextId);
@@ -246,7 +253,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         if (playbackState == STATE_READY) {
             //do something
-            mLoadingVideo.setVisibility(View.INVISIBLE);
+            mLoadingVideo.setVisibility(View.GONE);
             mExoplayerView.setVisibility(View.VISIBLE);
         }
     }
