@@ -33,7 +33,9 @@ public class StepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_detail);
 
         getDataFromIntent();
-        initStepDetailFragment();
+        if(savedInstanceState == null){
+            initStepDetailFragment();
+        }
         initActionBar();
     }
 

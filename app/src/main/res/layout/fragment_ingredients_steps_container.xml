@@ -42,7 +42,6 @@
                 android:background="@color/colorAccentLight"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:paddingLeft="20dp"
                 android:textColor="@color/colorPrimary"
                 android:id="@+id/tv_steps_title"/>

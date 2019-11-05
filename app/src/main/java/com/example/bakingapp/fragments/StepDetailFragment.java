@@ -78,22 +78,24 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
         mIsMasterDetailLayout = setMasterDetailLayout();
 
+        int position ;
+        Bundle bundle = this.getArguments();
+        System.out.println("savedInstanceState " + savedInstanceState);
+        System.out.println("bundle " + bundle);
+        if(savedInstanceState!= null) {
+            System.out.println("savedinstance state if");
+            position =savedInstanceState.getInt("position");
+        } else if (bundle != null) {
+            System.out.println("bundle if");
+            position = bundle.getInt("position", 0);
+        } else {
+            System.out.println("elseee");
+            position = 0;
+        }
         if(mIsMasterDetailLayout) {
-            int position ;
-            Bundle bundle = this.getArguments();
-            System.out.println("savedInstanceState " + savedInstanceState);
-            System.out.println("bundle " + bundle);
-            if(savedInstanceState!=null) {
-                position =savedInstanceState.getInt("position");
-            } else if (bundle != null) {
-                position = bundle.getInt("position", 0);
-            } else {
-                position = 0;
-            }
-
             getDataFromRecipeDetailActivity(position);
         } else {
-            getDataFromStepDetailActivity();
+            getDataFromStepDetailActivity(position);
         }
 
         mDescription.setText(mCurrentStep.getDescription());
@@ -109,10 +111,10 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         mContext = context;
     }
 
-    public void getDataFromStepDetailActivity() {
+    public void getDataFromStepDetailActivity(int position) {
         StepDetailActivity stepDetailActivity = (StepDetailActivity) getActivity();
-        mCurrentStep = stepDetailActivity.getStep();
         mCurrentSteps = stepDetailActivity.getSteps();
+        mCurrentStep = stepDetailActivity.getStep();
         if(mIsLandscape) {
             //hide appbar
             stepDetailActivity.hideActionBar();

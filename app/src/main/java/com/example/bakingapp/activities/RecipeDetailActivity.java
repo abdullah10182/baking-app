@@ -9,6 +9,7 @@ import butterknife.ButterKnife;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,10 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
+    private static final String TAG = "RecipeDetailActivity";
 
     private Recipe mRecipe;
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<Step> mSteps;
+    private Step mStep;
     @Nullable
     @BindView(R.id.v_divider_tablet_land)
     public View mFragmentDivider;
@@ -45,6 +48,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if(mFragmentDivider != null && savedInstanceState == null){
             initStepDetailFragment(0);
         }
+
         setRecipeFromIntent();
         initActionBar();
 
@@ -57,6 +61,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     }
 
     public void initIngredientsStepsFragment() {
+
         IngredientsStepsFragment ingredientsStepsFragment = new IngredientsStepsFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -85,6 +90,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         String jsonSelectedRecipe = mIntent.getStringExtra("recipe");
         mRecipe = gson.fromJson(jsonSelectedRecipe, Recipe.class);
         mSteps = mRecipe.getSteps();
+        mStep =(Step) mIntent.getSerializableExtra("step");
         mIngredients = mRecipe.getIngredients();
     }
 
