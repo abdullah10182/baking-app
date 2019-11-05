@@ -78,24 +78,11 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
         mIsMasterDetailLayout = setMasterDetailLayout();
 
-        int position ;
-        Bundle bundle = this.getArguments();
-        System.out.println("savedInstanceState " + savedInstanceState);
-        System.out.println("bundle " + bundle);
-        if(savedInstanceState!= null) {
-            System.out.println("savedinstance state if");
-            position =savedInstanceState.getInt("position");
-        } else if (bundle != null) {
-            System.out.println("bundle if");
-            position = bundle.getInt("position", 0);
-        } else {
-            System.out.println("elseee");
-            position = 0;
-        }
+        int position = setStepPosition(savedInstanceState);
         if(mIsMasterDetailLayout) {
             getDataFromRecipeDetailActivity(position);
         } else {
-            getDataFromStepDetailActivity(position);
+            getDataFromStepDetailActivity(position, savedInstanceState);
         }
 
         mDescription.setText(mCurrentStep.getDescription());
@@ -111,10 +98,14 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         mContext = context;
     }
 
-    public void getDataFromStepDetailActivity(int position) {
+    public void getDataFromStepDetailActivity(int position, @Nullable Bundle savedInstanceState) {
         StepDetailActivity stepDetailActivity = (StepDetailActivity) getActivity();
         mCurrentSteps = stepDetailActivity.getSteps();
-        mCurrentStep = stepDetailActivity.getStep();
+        if(savedInstanceState == null) {
+            mCurrentStep = stepDetailActivity.getStep();
+        } else {
+            mCurrentStep = mCurrentSteps.get(position);
+        }
         if(mIsLandscape) {
             //hide appbar
             stepDetailActivity.hideActionBar();
@@ -202,6 +193,25 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         mDescription.setText(mCurrentStep.getDescription());
         releasePlayer();
         initializeVideoPlayer(mCurrentStep.getVideoUrl());
+    }
+
+    public int setStepPosition( @Nullable Bundle savedInstanceState) {
+        int position;
+        Bundle bundle = this.getArguments();
+        System.out.println("savedInstanceState from StepDetailFragment" + savedInstanceState);
+        System.out.println("bundle " + bundle);
+        if(savedInstanceState!= null) {
+            System.out.println("savedinstance state if");
+            position =savedInstanceState.getInt("position");
+        } else if (bundle != null) {
+            System.out.println("bundle if");
+            position = bundle.getInt("position", 0);
+        } else {
+            System.out.println("else");
+            position = 0;
+        }
+
+        return position;
     }
 
     private void releasePlayer() {

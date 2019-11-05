@@ -33,6 +33,7 @@ public class StepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_detail);
 
         getDataFromIntent();
+        System.out.println("savedInstanceState from stepdetailActivity " + savedInstanceState);
         if(savedInstanceState == null){
             initStepDetailFragment();
         }
@@ -40,6 +41,7 @@ public class StepDetailActivity extends AppCompatActivity {
     }
 
     public void initStepDetailFragment() {
+        System.out.println("initStepDetailFragment");
         StepDetailFragment stepDetailFragment = new StepDetailFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
