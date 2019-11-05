@@ -122,6 +122,10 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
     public void initializeVideoPlayer(String videoUrl) {
         mExoplayerView.setVisibility(View.GONE);
+        int stepsSize = mCurrentSteps.size() - 1;
+        int nextId = mCurrentStep.getStepId();
+        setButtonsState(stepsSize, nextId);
+
         if(videoUrl == null || videoUrl.isEmpty()) {
             mNoVideo.setVisibility(View.VISIBLE);
             return;
@@ -129,10 +133,6 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             //mExoplayerView.setVisibility(View.VISIBLE);
             mNoVideo.setVisibility(View.GONE);
         }
-
-        int stepsSize = mCurrentSteps.size() - 1;
-        int nextId = mCurrentStep.getStepId();
-        setButtonsState(stepsSize, nextId);
 
         if(mExoplayer == null) {
             mLoadingVideo.setVisibility(View.VISIBLE);
@@ -230,6 +230,8 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     }
 
     private void setButtonsState(int stepsSize, int nextId) {
+        System.out.println("stepsize " + stepsSize);
+        System.out.println("next id " + nextId);
         if(nextId == 0) {
             mPrevBtn.setEnabled(false);
         } else {
