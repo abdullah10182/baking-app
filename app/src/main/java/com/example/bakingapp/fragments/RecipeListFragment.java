@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +45,8 @@ public class RecipeListFragment extends Fragment {
     private GridLayoutManager mLayoutManager;
     private ArrayList<Recipe> mRecipes = new ArrayList<>();
     private ImageView mHeroImage;
+    @BindView(R.id.pb_recipes_list)
+    public ProgressBar mProgressBarRecipeList;
 
     public RecipeListFragment() {
     }
@@ -96,6 +99,7 @@ public class RecipeListFragment extends Fragment {
                 }
 
                 System.out.println("Code:" + response.code());
+                mProgressBarRecipeList.setVisibility(View.INVISIBLE);
                 List<Recipe> recipes = response.body();
                 recipes.addAll(recipes);
                 recipes.addAll(recipes);
