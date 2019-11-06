@@ -1,6 +1,7 @@
 package com.example.bakingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
@@ -8,13 +9,16 @@ import com.example.bakingapp.fragments.RecipeListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    private RecipeListFragment mRecipeListFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().hide();
-        initRecipeListFragment();
+        if(savedInstanceState == null){
+            initRecipeListFragment();
+        }
     }
 
     public void initRecipeListFragment() {
@@ -42,5 +46,4 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
-
 }

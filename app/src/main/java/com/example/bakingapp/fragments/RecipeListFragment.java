@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.example.bakingapp.activities.RecipeDetailActivity;
 import com.example.bakingapp.adapters.RecipeListAdapter;
 import com.example.bakingapp.models.Recipe;
 import com.example.bakingapp.rest.JsonPlaceHolderApi;
+import com.example.bakingapp.utils.NetworkUtils;
 import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +50,9 @@ public class RecipeListFragment extends Fragment {
     private ImageView mHeroImage;
     @BindView(R.id.pb_recipes_list)
     public ProgressBar mProgressBarRecipeList;
+    @BindView(R.id.btn_retry_connection)
+    public Button mRetryConnection;
+    private Context mContext;
 
     public RecipeListFragment() {
     }
@@ -59,7 +65,7 @@ public class RecipeListFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         initRecipeRecycleView(rootView, context);
-        getRecipes();
+        getRecipes(context);
         initAppBar(rootView);
 
         return rootView;
@@ -81,7 +87,12 @@ public class RecipeListFragment extends Fragment {
         mRecyclerView.setAdapter(mRecipeListAdapter);
     }
 
-    public void getRecipes() {
+    public void getRecipes(Context context) {
+
+        if(!NetworkUtils.isNetworkAvailable(context)) {
+            errorLoadingData(context);
+            return;
+        }
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mBaseUrl)
@@ -161,6 +172,25 @@ public class RecipeListFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void errorLoadingData(Context context){
+        mProgressBarRecipeList.setVisibility(View.INVISIBLE);
+        mRetryConnection.setVisibility(View.VISIBLE);
+        Toast.makeText(context, "No internet connection, cannot retrieve recipes at the moment", Toast.LENGTH_LONG).show();
+    }
+
+    @OnClick(R.id.btn_retry_connection)
+    void retryButtonClicked(Button button){
+        mProgressBarRecipeList.setVisibility(View.VISIBLE);
+        mRetryConnection.setVisibility(View.GONE);
+        getRecipes(mContext);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
 }
