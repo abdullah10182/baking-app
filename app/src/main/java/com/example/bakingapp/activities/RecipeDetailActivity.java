@@ -88,6 +88,13 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         Intent mIntent = getIntent();
         String jsonSelectedRecipe = mIntent.getStringExtra("recipe");
+        if(jsonSelectedRecipe == null){
+            mRecipe = new Recipe();
+            mSteps = new ArrayList<Step>();
+            mStep = new Step(0, "null", "null", "", "");
+            mIngredients = new ArrayList<Ingredient>();
+            return;
+        }
         mRecipe = gson.fromJson(jsonSelectedRecipe, Recipe.class);
         mSteps = mRecipe.getSteps();
         mStep =(Step) mIntent.getSerializableExtra("step");
