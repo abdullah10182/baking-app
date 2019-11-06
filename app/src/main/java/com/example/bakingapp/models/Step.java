@@ -13,6 +13,7 @@ public class Step implements Serializable {
     private String videoUrl;
     @SerializedName("thumbnailURL")
     private String thumbnailUrl;
+    public int mCount;
 
     public Step(int stedId, String description, String shortDescription, String videoUrl, String thumbnailUrl) {
         this.stedId = stedId;
@@ -40,5 +41,9 @@ public class Step implements Serializable {
 
     public String getShortDescription() {
         return shortDescription;
+    }
+
+    public void setStedId(int stedId) {
+        this.stedId = stedId;
     }
 }

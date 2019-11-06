@@ -174,12 +174,16 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         int currentId = mCurrentStep.getStepId();
         int nextId;
 
+        //hide loader
+        mLoadingVideo.setVisibility(View.GONE);
 
         if(action == "next"){
             nextId = currentId + 1;
         } else {
             nextId = currentId - 1;
         }
+
+        System.out.println("Next id" + nextId);
 
         //scroll to top if landscape
         if(mStepDetailContainer != null) {
@@ -189,6 +193,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         setButtonsState(stepsSize, nextId);
 
         mCurrentStep = mCurrentSteps.get(nextId);
+        System.out.println(mCurrentStep.getStepId());
         if(mIsMasterDetailLayout) {
             RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) getActivity();
             recipeDetailActivity.setTitleBarText(mCurrentStep.getShortDescription());

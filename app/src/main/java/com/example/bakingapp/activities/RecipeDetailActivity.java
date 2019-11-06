@@ -109,6 +109,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
     }
 
     public ArrayList<Step> getSteps() {
+        for (int i = 0; i < mSteps.size(); i++) {
+            mSteps.get(i).setStedId(i);
+        }
         return mSteps;
     }
 
