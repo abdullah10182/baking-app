@@ -8,6 +8,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.example.bakingapp.fragments.StepDetailFragment;
 import com.example.bakingapp.models.Ingredient;
 import com.example.bakingapp.models.Recipe;
 import com.example.bakingapp.models.Step;
+import com.example.bakingapp.widgets.RecipeWidgetProvider;
+import com.example.bakingapp.widgets.RecipeWidgetService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -37,6 +40,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     @Nullable
     @BindView(R.id.v_divider_tablet_land)
     public View mFragmentDivider;
+    private static final String RECIPE_PREFERENCES = "myPrefrences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }
 
         setRecipeFromIntent();
+        //setRecipeDataInSharedPreferences();
+        RecipeWidgetService.startActionUpdateIngredientsWidget(this);
         initActionBar();
 
     }
@@ -89,10 +95,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         Intent mIntent = getIntent();
         String jsonSelectedRecipe = mIntent.getStringExtra("recipe");
         if(jsonSelectedRecipe == null){
-            mRecipe = new Recipe();
-            mSteps = new ArrayList<Step>();
-            mStep = new Step(0, "null", "null", "", "");
-            mIngredients = new ArrayList<Ingredient>();
+            getDataFromSharedPreferences();
             return;
         }
         mRecipe = gson.fromJson(jsonSelectedRecipe, Recipe.class);
@@ -135,5 +138,31 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     public void onClickCalled(int position) {
         initStepDetailFragment(position);
+    }
+
+    public void setRecipeDataInSharedPreferences() {
+        SharedPreferences.Editor editor = getSharedPreferences(RECIPE_PREFERENCES, MODE_PRIVATE).edit();
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        String jsonSelectedRecipe = gson.toJson(mRecipe);
+
+        editor.putString("selectedRecipe", jsonSelectedRecipe);
+        editor.commit();
+    }
+
+    public void getDataFromSharedPreferences() {
+        SharedPreferences prefs = getSharedPreferences(RECIPE_PREFERENCES, MODE_PRIVATE);
+        String selectedRecipe = prefs.getString("selectedRecipe", "");
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+
+        mRecipe = gson.fromJson(selectedRecipe, Recipe.class);
+        mSteps = mRecipe.getSteps();
+        mIngredients = mRecipe.getIngredients();
+
     }
 }
