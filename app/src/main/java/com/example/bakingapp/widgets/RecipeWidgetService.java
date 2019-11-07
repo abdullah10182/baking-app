@@ -46,11 +46,10 @@ public class RecipeWidgetService extends IntentService {
         String selectedRecipe = prefs.getString("selectedRecipe", "");
 
         Recipe recipe = gson.fromJson(selectedRecipe, Recipe.class);
-        String test = recipe.getName();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
-        RecipeWidgetProvider.updateIngredientsWidget(this, appWidgetManager, test, appWidgetIds);
+        RecipeWidgetProvider.updateIngredientsWidget(this, appWidgetManager, recipe, appWidgetIds);
 
     }
 }

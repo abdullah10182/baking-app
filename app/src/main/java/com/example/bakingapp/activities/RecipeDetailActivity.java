@@ -1,5 +1,6 @@
 package com.example.bakingapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     @BindView(R.id.v_divider_tablet_land)
     public View mFragmentDivider;
     private static final String RECIPE_PREFERENCES = "myPrefrences";
+    private boolean mFromWidget = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }
 
         setRecipeFromIntent();
-        //setRecipeDataInSharedPreferences();
+        setRecipeDataInSharedPreferences();
         RecipeWidgetService.startActionUpdateIngredientsWidget(this);
         initActionBar();
 
@@ -94,8 +97,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         Intent mIntent = getIntent();
         String jsonSelectedRecipe = mIntent.getStringExtra("recipe");
+
+        //if came in through widget click
         if(jsonSelectedRecipe == null){
             getDataFromSharedPreferences();
+            mFromWidget = true;
             return;
         }
         mRecipe = gson.fromJson(jsonSelectedRecipe, Recipe.class);
@@ -129,6 +135,23 @@ public class RecipeDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(title);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (!mFromWidget) return false;
+        int id = item.getItemId();
+        switch(id) {
+            case android.R.id.home:
+                onGoToMainActivity();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void onGoToMainActivity() {
+        Intent intent = new Intent(RecipeDetailActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Nullable
