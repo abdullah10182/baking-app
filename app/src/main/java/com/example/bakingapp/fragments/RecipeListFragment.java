@@ -26,6 +26,9 @@ import com.example.bakingapp.models.Recipe;
 import com.example.bakingapp.rest.JsonPlaceHolderApi;
 import com.example.bakingapp.utils.NetworkUtils;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +68,12 @@ public class RecipeListFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         initRecipeRecycleView(rootView, context);
-        getRecipes(context);
+
+        if(savedInstanceState == null) {
+            getRecipes(context);
+        } else {
+            setRecipesFromState(savedInstanceState);
+        }
         initAppBar(rootView);
 
         return rootView;
@@ -104,6 +112,7 @@ public class RecipeListFragment extends Fragment {
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                System.out.println("retro");
                 if(!response.isSuccessful()) {
                     System.out.println("Code:" + response.code());
                     return;
@@ -116,9 +125,7 @@ public class RecipeListFragment extends Fragment {
                 recipes.addAll(recipes);
                 recipes.addAll(recipes);
                 mRecipeListAdapter.setRecipes(recipes);
-
                 mRecipeListAdapter.notifyDataSetChanged();
-
             }
 
             @Override
@@ -191,6 +198,28 @@ public class RecipeListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        String jsonRecipes = gson.toJson(mRecipes);
+        outState.putString("recipes", jsonRecipes);
+    }
+
+    public void setRecipesFromState(Bundle savedInstanceState) {
+        mProgressBarRecipeList.setVisibility(View.INVISIBLE);
+        String jsonRecipes =savedInstanceState.getString("recipes");
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        TypeToken<ArrayList<Recipe>> token = new TypeToken<ArrayList<Recipe>>() {};
+        ArrayList<Recipe> recipes = gson.fromJson(jsonRecipes, token.getType());
+        mRecipeListAdapter.setRecipes(recipes);
+        mRecipeListAdapter.notifyDataSetChanged();
     }
 
 }
