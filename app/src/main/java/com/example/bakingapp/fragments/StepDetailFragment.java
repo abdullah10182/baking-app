@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.bakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.bakingapp.MainActivity;
 import com.example.bakingapp.R;
 import com.example.bakingapp.activities.RecipeDetailActivity;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -259,7 +262,6 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         if (playbackState == STATE_READY) {
-            //do something
             mLoadingVideo.setVisibility(View.GONE);
             mExoplayerView.setVisibility(View.VISIBLE);
         }
@@ -282,4 +284,5 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         super.onSaveInstanceState(outState);
         outState.putInt("position", mCurrentStep.getStepId());
     }
+
 }

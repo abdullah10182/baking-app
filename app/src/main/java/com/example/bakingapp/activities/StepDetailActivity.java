@@ -1,13 +1,18 @@
 package com.example.bakingapp.activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.test.espresso.IdlingResource;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.bakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.bakingapp.R;
 import com.example.bakingapp.fragments.IngredientsStepsFragment;
 import com.example.bakingapp.fragments.StepDetailFragment;

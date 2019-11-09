@@ -1,15 +1,24 @@
 package com.example.bakingapp;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.test.espresso.IdlingResource;
+
 import android.os.Bundle;
 
+import com.example.bakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.bakingapp.fragments.RecipeListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
     private RecipeListFragment mRecipeListFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,5 +54,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
     }
 }

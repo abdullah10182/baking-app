@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.bakingapp.MainActivity;
 import com.example.bakingapp.R;
 import com.example.bakingapp.activities.RecipeDetailActivity;
@@ -25,6 +28,7 @@ import com.example.bakingapp.adapters.RecipeListAdapter;
 import com.example.bakingapp.models.Recipe;
 import com.example.bakingapp.rest.JsonPlaceHolderApi;
 import com.example.bakingapp.utils.NetworkUtils;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.test.espresso.IdlingResource;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -56,6 +61,8 @@ public class RecipeListFragment extends Fragment {
     @BindView(R.id.btn_retry_connection)
     public Button mRetryConnection;
     private Context mContext;
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
 
     public RecipeListFragment() {
     }
@@ -66,6 +73,7 @@ public class RecipeListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
         Context context = rootView.getContext();
         ButterKnife.bind(this, rootView);
+        getIdlingResource();
 
         initRecipeRecycleView(rootView, context);
 
@@ -112,6 +120,7 @@ public class RecipeListFragment extends Fragment {
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                //SystemClock.sleep(1500);
                 System.out.println("retro");
                 if(!response.isSuccessful()) {
                     System.out.println("Code:" + response.code());
@@ -132,7 +141,9 @@ public class RecipeListFragment extends Fragment {
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 System.out.println(t.getMessage());
             }
+
         });
+        mIdlingResource.setIdleState(true);
     }
 
     public void initAppBar(View rootView) {
@@ -220,6 +231,14 @@ public class RecipeListFragment extends Fragment {
         ArrayList<Recipe> recipes = gson.fromJson(jsonRecipes, token.getType());
         mRecipeListAdapter.setRecipes(recipes);
         mRecipeListAdapter.notifyDataSetChanged();
+    }
+
+    @VisibleForTesting
+    private void getIdlingResource() {
+        if (getActivity() != null) {
+            mIdlingResource = (SimpleIdlingResource) ((MainActivity) getActivity()).getIdlingResource();
+            mIdlingResource.setIdleState(false);
+        }
     }
 
 }
